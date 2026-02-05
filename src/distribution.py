@@ -38,17 +38,20 @@ class Distrubution:
     def showConditionedVariablesMask(self):
         # Reverse the mask for display, so the order matches the variable order in the distribution table
         formatted_mask = self.conditioned_variables_mask[::-1]  
-        print("Máscara de variables condicionadas: ", formatted_mask)
+        string_mask = "".join(str(value) for value in formatted_mask)
+        print("Máscara de variables condicionadas: ", string_mask)
 
     def showConditionedValuesMask(self):
         # Reverse the mask for display, so the order matches the variable order in the distribution table
         formatted_mask = self.conditioned_values_mask[::-1]
-        print("Máscara de valores condicionados: ", formatted_mask)
+        string_mask = "".join(str(value) for value in formatted_mask)
+        print("Máscara de valores condicionados: ", string_mask)
 
     def showInterestValuesMask(self):
         # Reverse the mask for display, so the order matches the variable order in the distribution table
         formatted_mask = self.interest_variables_mask[::-1]
-        print("Máscara de variables de interés: ", formatted_mask)
+        string_mask = "".join(str(value) for value in formatted_mask)
+        print("Máscara de variables de interés: ", string_mask)
 
     def setConditionedVariable(self, variable_index: int, value: int):
         # Check if the variable index is within the valid range and if the value is boolean

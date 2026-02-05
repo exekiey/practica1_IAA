@@ -31,7 +31,6 @@ class CSVDistributionLoader:
 
     def __parseLine(self, line: str):
         line = line.strip()
-        # Check if the line is empty after stripping whitespace
         if line == "":
             return None, None
         # Split the line by comma and check if it has exactly two parts (index and probability)
