@@ -1,4 +1,4 @@
-# Práctica 1 IAA: Distribuciones Conjuntas Discreta
+# Práctica 1 IAA: Distribuciones Conjuntas Discretas
 
 Autores:
 - Ezequiel Juan Canale Oliva
