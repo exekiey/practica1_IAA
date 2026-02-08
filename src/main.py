@@ -1,27 +1,37 @@
 from csv_distribution_loader import CSVDistributionLoader
 from random_distribution_loader import RandomDistributionLoader
 
+def loadDistributionFromCSV() -> CSVDistributionLoader:
+    file_path: str = input("Introduce la ruta del archivo CSV: ")
+    loader: CSVDistributionLoader = CSVDistributionLoader()
+    try:
+        loader.loadDistribution(file_path)
+    except (ValueError, IndexError) as e:
+        print(e)
+        return None
+    return loader.getDistribution()
+
+def loadRandomDistribution() -> CSVDistributionLoader:
+    amount_of_variables: int = int(input("Introduce el número de variables de la distribución aleatoria: "))
+    loader: RandomDistributionLoader = RandomDistributionLoader()
+    try:
+        loader.loadDistribution(amount_of_variables)
+    except ValueError as e:
+        print(e)
+        return None
+    return loader.getDistribution()
+
 def main():
-    load_type = input("Introduce la forma de carga de la distribución (1 para CSV y 0 para aleaorio): ")
+    load_type: str = input("Introduce la forma de carga de la distribución (1 para CSV y 0 para aleaorio): ")
     distribution = None
     if load_type == "1":
-        file_path = input("Introduce la ruta del archivo CSV: ")
-        loader = CSVDistributionLoader()
-        try:
-            loader.loadDistribution(file_path)
-        except ValueError as e:
-            print(e)
+        distribution = loadDistributionFromCSV()
+        if distribution is None:
             return
-        distribution = loader.getDistribution()
     elif load_type == "0":
-        amount_of_variables = int(input("Introduce el número de variables: "))
-        loader = RandomDistributionLoader()
-        try:
-            loader.loadDistribution(amount_of_variables)
-        except ValueError as e:
-            print(e)
+        distribution = loadRandomDistribution()
+        if distribution is None:
             return
-        distribution = loader.getDistribution()
     else:
         print("Opción no válida.")
         return
@@ -29,19 +39,19 @@ def main():
     print("\nDistribución cargada exitosamente: \n")
     distribution.showDistribution()
     
-    amount_of_interest_variables = int(input("\nIntroduce el número de variables de interés: "))
+    amount_of_interest_variables: int = int(input("\nIntroduce el número de variables de interés: "))
     for i in range(amount_of_interest_variables):
-        variable_index = int(input(f"Introduce el índice de la variable de interés {i+1} (1 para X1, etc): "))
+        variable_index: int = int(input(f"Introduce el índice de la variable de interés {i+1} (1 para X1, etc): "))
         try:
             distribution.setInterestVariable(variable_index - 1)
         except IndexError as e:
             print(e)
             return
 
-    amount_of_conditioned_variables = int(input("\nIntroduce el número de variables condicionadas: "))
+    amount_of_conditioned_variables: int = int(input("\nIntroduce el número de variables condicionadas: "))
     for i in range(amount_of_conditioned_variables):
-        variable_index = int(input(f"Introduce el índice de la variable condicionada {i+1} (1 para X1, etc): "))
-        value = int(input(f"Introduce el valor de la variable condicionada {i+1} (0 o 1): "))
+        variable_index: int = int(input(f"Introduce el índice de la variable condicionada {i+1} (1 para X1, etc): "))
+        value: int = int(input(f"Introduce el valor de la variable condicionada {i+1} (0 o 1): "))
         try:
             distribution.setConditionedVariable(variable_index - 1, value)
         except (IndexError, ValueError) as e:

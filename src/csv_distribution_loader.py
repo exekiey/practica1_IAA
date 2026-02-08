@@ -7,19 +7,19 @@ class CSVDistributionLoader:
     def loadDistribution(self, file_path: str):
         with open(file_path, 'r') as file:
             # First line is used to determine the number of variables and initialize the distribution
-            first_line = file.readline()
-            first_key, first_value = self.__parseLine(first_line)
-            first_line_mask = first_line.split(',')[0]
+            first_line: str = file.readline()
+            first_key: int; first_value: float = self.__parseLine(first_line)
+            first_line_mask: str = first_line.split(',')[0]
             # The number of variables is determined by the length of the binary string in the first line
-            number_of_variables = len(first_line_mask)
-            amount_of_values = 2**number_of_variables
-            self.distrubution = Distrubution(amount_of_values)
+            number_of_variables: int = len(first_line_mask)
+            amount_of_values: int = 2 ** number_of_variables
+            self.distrubution: Distrubution = Distrubution(amount_of_values)
             if first_key is None or first_value is None:
                 raise ValueError("El formato del archivo CSV es incorrecto.")
             self.distrubution.insert(first_key, first_value)
             # Parse the rest of the lines in the file
             for line in file:
-                key, value = self.__parseLine(line)
+                key: int; value: float = self.__parseLine(line)
                 if key is not None and value is not None:
                     self.distrubution.insert(key, value)
 

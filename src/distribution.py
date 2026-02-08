@@ -21,36 +21,36 @@ class Distrubution:
             raise IndexError("Índice de clave fuera de rango.")
         elif value < 0 or value > 1:
             raise ValueError("El valor de probabilidad debe estar entre 0 y 1.")
-        self.data[key] = value
+        self.data[key]: float = value
 
     def showDistribution(self):
         # Header, showing variable names in the format Xn where n is the variable index
-        header = " ".join(f"X{self.number_of_variables - i}" for i in range(self.number_of_variables))
+        header: str = " ".join(f"X{self.number_of_variables - i}" for i in range(self.number_of_variables))
         print(f"{header} Probabilidad")
         # Each row corresponds to a combination of variable values
         for index, probability in enumerate(self.data):
             # Convert the index to a binary string, padded with zeros to match the number of variables
-            binary = format(index, f"0{self.number_of_variables}b")
+            binary: str = format(index, f"0{self.number_of_variables}b")
             # Join the bits with spaces for better readability
-            row = " " + "  ".join(bit for bit in binary)
+            row: str = " " + "  ".join(bit for bit in binary)
             print(f"{row}     {probability:.2f}")
 
     def showConditionedVariablesMask(self):
         # Reverse the mask for display, so the order matches the variable order in the distribution table
-        formatted_mask = self.conditioned_variables_mask[::-1]  
-        string_mask = "".join(str(value) for value in formatted_mask)
+        formatted_mask: list = self.conditioned_variables_mask[::-1]  
+        string_mask: str = "".join(str(value) for value in formatted_mask)
         print("Máscara de variables condicionadas: ", string_mask)
 
     def showConditionedValuesMask(self):
         # Reverse the mask for display, so the order matches the variable order in the distribution table
-        formatted_mask = self.conditioned_values_mask[::-1]
-        string_mask = "".join(str(value) for value in formatted_mask)
+        formatted_mask: list = self.conditioned_values_mask[::-1]
+        string_mask: str = "".join(str(value) for value in formatted_mask)
         print("Máscara de valores condicionados: ", string_mask)
 
     def showInterestValuesMask(self):
         # Reverse the mask for display, so the order matches the variable order in the distribution table
-        formatted_mask = self.interest_variables_mask[::-1]
-        string_mask = "".join(str(value) for value in formatted_mask)
+        formatted_mask: list = self.interest_variables_mask[::-1]
+        string_mask: str = "".join(str(value) for value in formatted_mask)
         print("Máscara de variables de interés: ", string_mask)
 
     def setConditionedVariable(self, variable_index: int, value: int):
