@@ -1,4 +1,4 @@
-from distribution import Distrubution
+from distribution import Distribution
 import random
 
 class RandomDistributionLoader:
@@ -9,7 +9,7 @@ class RandomDistributionLoader:
         if (amount_of_variables < 1):
             raise ValueError("El número de variables de la distribución debe ser al menos 1.")
         amount_of_values = 2**amount_of_variables
-        self.distrubution = Distrubution(amount_of_values)
+        self.distrubution = Distribution(amount_of_values)
         # Generate random values and normalize them before inserting into the distribution
         values = [random.random() for _ in range(amount_of_values)]
         total_sum = sum(values)

@@ -2,6 +2,7 @@ from csv_distribution_loader import CSVDistributionLoader
 from random_distribution_loader import RandomDistributionLoader
 from distribution_tester import DistributionTester
 import time
+
 def main():
     load_type = input("Introduce la forma de carga de la distribución (1 para CSV y 0 para aleaorio): ")
     distribution = None
@@ -28,37 +29,50 @@ def main():
         return
     
     print("\nDistribución cargada exitosamente: \n")
-    #distribution.showDistribution()
-    """
-    amount_of_interest_variables = int(input("\nIntroduce el número de variables de interés: "))
-    for i in range(amount_of_interest_variables):
-        variable_index = int(input(f"Introduce el índice de la variable de interés {i+1} (1 para X1, etc): "))
-        try:
-            distribution.setInterestVariable(variable_index - 1)
-        except IndexError as e:
-            print(e)
-            return
+    distribution.showDistribution()
 
-    amount_of_conditioned_variables = int(input("\nIntroduce el número de variables condicionadas: "))
-    for i in range(amount_of_conditioned_variables):
-        variable_index = int(input(f"Introduce el índice de la variable condicionada {i+1} (1 para X1, etc): "))
-        value = int(input(f"Introduce el valor de la variable condicionada {i+1} (0 o 1): "))
-        try:
-            distribution.setConditionedVariable(variable_index - 1, value)
-        except (IndexError, ValueError) as e:
-            print(e)
-            return
-    print("\nLas máscaras resultantes son las siguientes: \n")
-    distribution.showInterestValuesMask()
-    distribution.showConditionedVariablesMask()
-    distribution.showConditionedValuesMask()
-    """
-    print("\nDistribución condicionada: \n")
-    tester = DistributionTester(distribution)
-    print(distribution.number_of_variables)
-    for i in range(50):
-        print(tester.testWithRandomMasks())    
-        distribution.resetMasks()
+    exection_type = input("\nIntroduce el tipo de ejecución (1 para manual y 0 pruebas automáticas): ")
+    if (exection_type == "1"):
+        amount_of_interest_variables = int(input("\nIntroduce el número de variables de interés: "))
+        for i in range(amount_of_interest_variables):
+            variable_index = int(input(f"Introduce el índice de la variable de interés {i+1} (1 para X1, etc): "))
+            try:
+                distribution.setInterestVariable(variable_index - 1)
+            except IndexError as e:
+                print(e)
+                return
+
+        amount_of_conditioned_variables = int(input("\nIntroduce el número de variables condicionadas: "))
+        for i in range(amount_of_conditioned_variables):
+            variable_index = int(input(f"Introduce el índice de la variable condicionada {i+1} (1 para X1, etc): "))
+            value = int(input(f"Introduce el valor de la variable condicionada {i+1} (0 o 1): "))
+            try:
+                distribution.setConditionedVariable(variable_index - 1, value)
+            except (IndexError, ValueError) as e:
+                print(e)
+                return
+        print("\nLas máscaras resultantes son las siguientes: \n")
+        distribution.showInterestValuesMask()
+        distribution.showConditionedVariablesMask()
+        distribution.showConditionedValuesMask()
+
+        t0 = time.time()
+        conditioned_distribution = distribution.buildConditionDistribution()
+        t1 = time.time()
+        print("\nDistribución condicionada: \n")
+        conditioned_distribution.showDistribution()
+        print(f"\nTiempo de construcción de la distribución condicionada: {t1 - t0:.4f} segundos")
+
+    elif (exection_type == "0"):
+        print("\nTiempos para constuir distribución condicionada por cantidad \n de variables de interés y condicionadas: \n")
+        tester = DistributionTester(distribution)
+        print(distribution.number_of_variables)
+        for i in range(1000):
+            print(str(tester.testWithRandomMasks()) + ",")    
+            distribution.resetMasks()
+    else:
+        print("Opción no válida.")
+        return
     
 if __name__ == "__main__":
     main()

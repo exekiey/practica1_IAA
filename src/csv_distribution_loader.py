@@ -1,4 +1,4 @@
-from distribution import Distrubution
+from distribution import Distribution
 
 class CSVDistributionLoader:
     def __init__(self):
@@ -13,7 +13,7 @@ class CSVDistributionLoader:
             # The number of variables is determined by the length of the binary string in the first line
             number_of_variables = len(first_line_mask)
             amount_of_values = 2**number_of_variables
-            self.distrubution = Distrubution(amount_of_values)
+            self.distrubution = Distribution(amount_of_values)
             if first_key is None or first_value is None:
                 raise ValueError("El formato del archivo CSV es incorrecto.")
             self.distrubution.insert(first_key, first_value)
