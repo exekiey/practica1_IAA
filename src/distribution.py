@@ -72,3 +72,66 @@ class Distrubution:
         self.conditioned_variables_mask = [0] * self.number_of_variables
         self.conditioned_values_mask = [0] * self.number_of_variables
         self.interest_variables_mask = [0] * self.number_of_variables
+        
+    def buildConditionDistribution(self):
+        conditioned_indexes: list = self.__getIndexesFromMask(self.conditioned_variables_mask)
+        valid_indexes: list = self.__getValidIndexes(conditioned_indexes)
+        interest_indexes: list = self.__getIndexesFromMask(self.interest_variables_mask)
+
+        new_distribution_size: int = 2 ** len(interest_indexes)
+        conditioned_distribution: Distrubution = Distrubution(new_distribution_size)
+        interest_index_translator = {}
+
+        for new_index, current_shit in enumerate(interest_indexes):
+            interest_index_translator[current_shit] = new_index
+        
+        for conditioned_row in range(new_distribution_size):
+            current_index_mask = []
+            for current_shit in range(len(interest_indexes)):
+                current_interest_bit = (conditioned_row >> current_shit) & 1
+                current_index_mask.append(current_interest_bit)
+            for current_valid_index in valid_indexes:
+                if self.__checkValidInterestRow(interest_indexes, current_valid_index, current_index_mask, interest_index_translator):
+                    conditioned_distribution.data[conditioned_row] += self.data[current_valid_index]
+
+        conditioned_distribution.__normalize()
+
+        return conditioned_distribution
+
+    def __normalize(self):
+        sumatory = 0
+        for current_probability in self.data:
+            sumatory += current_probability
+        normalized_probability = []
+        for current_probability in self.data:
+          normalized_probability.append(current_probability / sumatory)
+        self.data = normalized_probability
+
+    def getIndexesFromMask(self, mask: list):
+        indexes: list = []
+        for i in range(self.number_of_variables):
+            if mask[i] == 1:
+                indexes.append(i)
+        return indexes
+    
+    def __checkValidInterestRow(self, interest_indexes: list, current_row: int, values_mask: list, index_translator: list):
+      for current_interest_index in interest_indexes:
+        current_row_interest_bit = (current_row >> current_interest_index) & 1
+        if current_row_interest_bit != values_mask[index_translator[current_interest_index]]:
+          return False
+      return True
+    
+    def __checkValidConditionedRow(self, conditioned_indexes: list, current_row: int):
+      for current_conditioned_index in conditioned_indexes:
+        current_row_conditioned_bit = (current_row >> current_conditioned_index) & 1
+        if current_row_conditioned_bit != self.conditioned_values_mask[current_conditioned_index]:
+          return False
+      return True
+
+    def __getValidIndexes(self, conditioned_indexes: list):
+        valid_indexes: list = []
+        for current_row in range(len(self.data)):
+            if self.__checkValidConditionedRow(conditioned_indexes, current_row):
+                valid_indexes.append(current_row)
+        return valid_indexes
+
