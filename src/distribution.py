@@ -31,7 +31,7 @@ class Distribution:
         for index, probability in enumerate(self.data):
             # Convert the index to a binary string, padded with zeros to match the number of variables
             binary: str = format(index, f"0{self.number_of_variables}b")
-            # Join the bits with spaces for better readability
+            # Join the bits with spaces
             row: str = " " + "  ".join(bit for bit in binary)
             print(f"{row}     {probability:.2f}")
 
@@ -87,19 +87,26 @@ class Distribution:
 
         new_distribution_size: int = 2 ** len(interest_indexes)
         conditioned_distribution: Distribution = Distribution(new_distribution_size)
+        # Creates a map with the translation of the indexes of the interest variables in the original 
+        # distribution to the new distribution equivalent indexes.
         interest_index_translator = {}
-
         for new_index, current_shift in enumerate(interest_indexes):
             interest_index_translator[current_shift] = new_index
+        # Iterate over all the possible combinations of the interest variables (conditioned distribution rows)
         for conditioned_row in range(new_distribution_size):
             current_index_mask = []
+            # Create a mask with the values of the interest variables for the current conditioned distribution row
             for current_shift in range(len(interest_indexes)):
                 current_interest_bit = (conditioned_row >> current_shift) & 1
                 current_index_mask.append(current_interest_bit)
             # Will store the indexes of the valid rows that have been used
             used_indexes = []
+            # Iterate over the valid rows of the original distribution
             for current_valid_index in valid_indexes:
+                # Check if the current valid row matches the values of the interest variables for the current 
+                # conditioned distribution row
                 if self.__checkValidInterestRow(interest_indexes, current_valid_index, current_index_mask, interest_index_translator):
+                    # If it matches, add the probability to the new row
                     conditioned_distribution.data[conditioned_row] += self.data[current_valid_index]
                     used_indexes.append(current_valid_index)
             # Remove used indexes (rows) from valid indexes (rows) to optimize the next iterations
@@ -115,13 +122,14 @@ class Distribution:
             sumatory += current_probability
         if sumatory == 0:
             raise ValueError("Distribución no se puede normalizar: suma de probabilidades es cero.")
-        
+        # Divide each probability by the sum of all probabilities
         normalized_probability = []
         for current_probability in self.data:
           normalized_probability.append(current_probability / sumatory)
         self.data = normalized_probability
 
     def getIndexesFromMask(self, mask: list):
+        # Get the indexes of the variables that are marked as 1 in the mask
         indexes: list = []
         for i in range(self.number_of_variables):
             if mask[i] == 1:
@@ -129,8 +137,10 @@ class Distribution:
         return indexes
     
     def __checkValidInterestRow(self, interest_indexes: list, current_row: int, values_mask: list, index_translator: dict):
+      # Check if a row matches the values of the interest variables oof the current conditioned distribution row
       for current_interest_index in interest_indexes:
         current_row_interest_bit = (current_row >> current_interest_index) & 1
+        # Uses the translator to get the index of the interest variable in the current conditioned distribution row
         if current_row_interest_bit != values_mask[index_translator[current_interest_index]]:
           return False
       return True
@@ -143,6 +153,7 @@ class Distribution:
       return True
 
     def __getValidIndexes(self, conditioned_indexes: list):
+        # Check which rows of the original distribution match the values of the conditioned variables
         valid_indexes: list = []
         for current_row in range(len(self.data)):
             if self.__checkValidConditionedRow(conditioned_indexes, current_row):

@@ -6,6 +6,7 @@ class DistributionTester:
 		self.distribution = distribution
 	
 	def testWithRandomMasks(self):
+		# Randomly set interest variables and conditioned variables
 		number_of_interest_variables = random.randint(1, self.distribution.number_of_variables)
 		for _ in range(number_of_interest_variables):
 			random_variable = random.randint(0, self.distribution.number_of_variables - 1)
@@ -14,11 +15,13 @@ class DistributionTester:
 		number_of_conditioned_variables = 0
 		for _ in range(random.randint(0, self.distribution.number_of_variables)):			
 			random_variable = random.randint(0, self.distribution.number_of_variables - 1)
+			# Check if the variable is already marked as an interest variable, if it is, skips it
 			if random_variable in self.distribution.getIndexesFromMask(self.distribution.interest_variables_mask):
 				continue
 			random_value = random.randint(0, 1)
 			number_of_conditioned_variables += 1
 			self.distribution.setConditionedVariable(random_variable, random_value)
+		
 		t0 = time.time()
 		conditioned_distribution = self.distribution.buildConditionDistribution()
 		t1 = time.time()
